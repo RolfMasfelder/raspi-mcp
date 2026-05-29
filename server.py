@@ -120,11 +120,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Raspi MCP Server")
     parser.add_argument(
         "--transport",
-        choices=["streamable_http", "sse", "stdio"],
-        default="streamable_http",
+        choices=["streamable-http", "sse", "stdio"],
+        default="streamable-http",
     )
     parser.add_argument("--port", type=int, default=8080)
     args = parser.parse_args()
 
     logger.info("Starting raspi-mcp (transport=%s)", args.transport)
-    mcp.run(transport=args.transport)
+    mcp.run(transport=args.transport)  # type: ignore[arg-type]

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "MCP server for Raspberry Pi GPIO/LED control and DS18B20 temperature sensors"
 requires-python = ">=3.11"
 dependencies = [
-    "mcp[fastmcp]>=1.0",
+    "mcp>=1.0",
     "pydantic>=2.0",
 ]
 

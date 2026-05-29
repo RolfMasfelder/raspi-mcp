@@ -25,7 +25,7 @@ Der Server wird von einem separaten System (`agentic_rag`, Django/Celery) über 
 ## Stack
 
 - **Python 3.13** (kein Docker — GPIO-Zugriff in Containern ist unnötig kompliziert)
-- **`mcp[fastmcp]`** — FastMCP als Server-Framework (JSON-RPC 2.0 over Streamable HTTP)
+- **`mcp>=1.0`** — FastMCP ist seit v1.0 direkt enthalten (kein `[fastmcp]`-Extra mehr)
 - **`gpiozero`** — LED-Steuerung; auf dem Pi vorinstalliert (`python3-gpiozero`)
 - **`pydantic>=2`** — Input-Validierung für alle Tool-Schemas
 - **`pytest` + `pytest-asyncio`** — Tests
@@ -103,7 +103,7 @@ Konfiguriert über `.env`-Variable `RASPI_MCP_URL`. Die beiden Repos sind vollst
 ## Entwicklung ohne Hardware (Dev-Maschine)
 
 ```bash
-pip install "mcp[fastmcp]>=1.0" "pydantic>=2" gpiozero pytest pytest-asyncio ruff
+pip install "mcp>=1.0" "pydantic>=2" gpiozero pytest pytest-asyncio ruff
 pytest   # LED-Tests via MockFactory, Temperaturtests via tmp_path
 python server.py   # Server läuft, GPIO-Calls gehen durch MockFactory
 ```
