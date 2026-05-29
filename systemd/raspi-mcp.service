@@ -1,0 +1,17 @@
+[Unit]
+Description=Raspberry Pi MCP Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/raspi-mcp
+ExecStart=/home/pi/raspi-mcp/.venv/bin/python server.py --transport streamable_http --port 8080
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
