@@ -22,7 +22,17 @@ from hardware.temperature import read_temperature, list_sensors
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("raspi-mcp")
+_parser = argparse.ArgumentParser(description="Raspi MCP Server")
+_parser.add_argument(
+    "--transport",
+    choices=["streamable-http", "sse", "stdio"],
+    default="streamable-http",
+)
+_parser.add_argument("--port", type=int, default=8080)
+_parser.add_argument("--host", default="0.0.0.0")
+_args = _parser.parse_args()
+
+mcp = FastMCP("raspi-mcp", host=_args.host, port=_args.port)
 
 
 # ---------------------------------------------------------------------------
@@ -117,15 +127,5 @@ def temperature_read(input: SensorIdInput) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Raspi MCP Server")
-    parser.add_argument(
-        "--transport",
-        choices=["streamable-http", "sse", "stdio"],
-        default="streamable-http",
-    )
-    parser.add_argument("--port", type=int, default=8080)
-    parser.add_argument("--host", default="0.0.0.0")
-    args = parser.parse_args()
-
-    logger.info("Starting raspi-mcp (transport=%s, host=%s, port=%d)", args.transport, args.host, args.port)
-    mcp.run(transport=args.transport, host=args.host, port=args.port)  # type: ignore[arg-type]
+    logger.info("Starting raspi-mcp (transport=%s, host=%s, port=%d)", _args.transport, _args.host, _args.port)
+    mcp.run(transport=_args.transport)  # type: ignore[arg-type]
