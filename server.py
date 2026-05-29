@@ -124,7 +124,8 @@ if __name__ == "__main__":
         default="streamable-http",
     )
     parser.add_argument("--port", type=int, default=8080)
+    parser.add_argument("--host", default="0.0.0.0")
     args = parser.parse_args()
 
-    logger.info("Starting raspi-mcp (transport=%s)", args.transport)
-    mcp.run(transport=args.transport)  # type: ignore[arg-type]
+    logger.info("Starting raspi-mcp (transport=%s, host=%s, port=%d)", args.transport, args.host, args.port)
+    mcp.run(transport=args.transport, host=args.host, port=args.port)  # type: ignore[arg-type]
