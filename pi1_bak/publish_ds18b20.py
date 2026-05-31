@@ -22,7 +22,7 @@ file = open('/sys/devices/w1_bus_master1/w1_master_slaves')
 w1_slaves = file.readlines()
 file.close()
 
-def on_connect(self, client, userdata, flags, rc) :
+def on_connect(client, userdata, flags, rc) :
     if rc==0:
         print("connected ok")
     else:
@@ -35,7 +35,8 @@ def on_disconnect(client, userdata, flags, rc=0) :
 def on_publish(client,userdata,result):             #create function for callback
     print("data published \n")
 
-client1= paho.Client(mqtt_topic)                    #create client object
+client1= paho.Client(callback_api_version=paho.CallbackAPIVersion.VERSION1,
+                     client_id=mqtt_topic)         #create client object
 client1.on_publish = on_publish                     #assign function to callback
 client1.on_connect = on_connect
 client1.on_disconnect = on_disconnect
