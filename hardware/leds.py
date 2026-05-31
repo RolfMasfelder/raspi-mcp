@@ -29,7 +29,7 @@ def _get_led(pin: int) -> object:
     if pin not in _leds:
         if not _GPIOZERO_AVAILABLE:
             raise RuntimeError("gpiozero is not installed; cannot control LEDs")
-        _leds[pin] = LED(pin)
+        _leds[pin] = LED(pin, active_high=False)
     return _leds[pin]
 
 
