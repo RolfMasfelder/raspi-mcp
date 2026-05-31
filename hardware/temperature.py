@@ -2,14 +2,15 @@
 DS18B20 temperature sensor reading via Linux 1-Wire kernel interface.
 
 Sensors appear under /sys/bus/w1/devices/ as directories named
-28-XXXXXXXXXXXX. Each sensor has a w1_slave file with lines like:
+28-XXXXXXXXXXXX (DS18B20) or 10-XXXXXXXXXXXX (DS18S20). Each sensor
+has a w1_slave file with lines like:
 
     50 01 4b 46 7f ff 0c 10 1c : crc=1c YES
     50 01 4b 46 7f ff 0c 10 1c t=21250
 
 The temperature in millidegrees Celsius is the value after "t=".
 
-To enable 1-Wire on a Raspberry Pi, add to /boot/config.txt:
+To enable 1-Wire on a Raspberry Pi, add to /boot/firmware/config.txt:
     dtoverlay=w1-gpio
 and reboot.
 """
@@ -22,12 +23,23 @@ logger = logging.getLogger(__name__)
 W1_DEVICES_PATH = Path("/sys/bus/w1/devices")
 
 
+# Family codes for known Dallas/Maxim 1-Wire temperature sensors
+_TEMP_SENSOR_PREFIXES = ("28-", "10-", "22-")
+
+
 def list_sensors() -> list[str]:
-    """Return IDs of all connected DS18B20 sensors (directories starting with '28-')."""
+    """Return IDs of all connected 1-Wire temperature sensors.
+
+    Supports DS18B20 (28-), DS18S20 (10-) and DS1822 (22-) family codes.
+    """
     if not W1_DEVICES_PATH.exists():
         logger.warning("1-Wire device path %s does not exist", W1_DEVICES_PATH)
         return []
-    return [d.name for d in W1_DEVICES_PATH.iterdir() if d.name.startswith("28-")]
+    return [
+        d.name
+        for d in W1_DEVICES_PATH.iterdir()
+        if d.name.startswith(_TEMP_SENSOR_PREFIXES)
+    ]
 
 
 def read_temperature(sensor_id: str) -> float:

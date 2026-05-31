@@ -8,6 +8,7 @@ from hardware.temperature import list_sensors, read_temperature
 
 
 SENSOR_ID = "28-abcd12345678"
+SENSOR_ID_DS18S20 = "10-0008024b541d"
 
 VALID_W1_SLAVE = (
     "50 01 4b 46 7f ff 0c 10 1c : crc=1c YES\n"
@@ -34,6 +35,13 @@ def test_list_sensors_returns_ids(w1_root: Path):
     with patch("hardware.temperature.W1_DEVICES_PATH", w1_root):
         result = list_sensors()
     assert result == [SENSOR_ID]
+
+
+def test_list_sensors_includes_ds18s20(w1_root: Path):
+    (w1_root / SENSOR_ID_DS18S20).mkdir()
+    with patch("hardware.temperature.W1_DEVICES_PATH", w1_root):
+        result = list_sensors()
+    assert set(result) == {SENSOR_ID, SENSOR_ID_DS18S20}
 
 
 def test_list_sensors_empty_when_path_missing(tmp_path: Path):
