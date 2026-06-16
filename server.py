@@ -16,7 +16,7 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from hardware.leds import led_blink, led_off, led_on, led_status
 from hardware.temperature import list_sensors, read_temperature
@@ -38,7 +38,7 @@ mcp = FastMCP("raspi-mcp", host=_args.host, port=_args.port)
 
 
 # ---------------------------------------------------------------------------
-# Input schemas
+# Shared field definitions
 # ---------------------------------------------------------------------------
 
 # Known LED wiring on this Raspberry Pi (BCM pin → colour)
@@ -48,61 +48,26 @@ _LED_CONFIG: dict[int, str] = {
     22: "green",
 }
 
+_PIN_FIELD = Field(
+    ...,
+    ge=1,
+    le=40,
+    description=(
+        "BCM GPIO pin number of the LED. "
+        "Known LEDs on this Pi: 17=red, 27=yellow, 22=green. "
+        "Example: 17"
+    ),
+)
 
-class LedPinInput(BaseModel):
-    pin: int = Field(
-        ...,
-        ge=1,
-        le=40,
-        description=(
-            "BCM GPIO pin number of the LED. "
-            "Known LEDs on this Pi: 17=red, 27=yellow, 22=green. "
-            "Example: 17"
-        ),
-    )
-
-
-class LedBlinkInput(BaseModel):
-    pin: int = Field(
-        ...,
-        ge=1,
-        le=40,
-        description=(
-            "BCM GPIO pin number of the LED. "
-            "Known LEDs on this Pi: 17=red, 27=yellow, 22=green. "
-            "Example: 17"
-        ),
-    )
-    on_time: float = Field(
-        0.5,
-        gt=0.0,
-        le=10.0,
-        description="Seconds the LED stays ON per blink cycle. Default: 0.5",
-    )
-    off_time: float = Field(
-        0.5,
-        gt=0.0,
-        le=10.0,
-        description="Seconds the LED stays OFF per blink cycle. Default: 0.5",
-    )
-    n: int = Field(
-        3,
-        ge=1,
-        le=20,
-        description="Number of blink cycles (1–20). Default: 3",
-    )
-
-
-class SensorIdInput(BaseModel):
-    sensor_id: str = Field(
-        ...,
-        min_length=1,
-        description=(
-            "1-Wire device ID of the temperature sensor as returned by temperature_list_sensors. "
-            "Known sensors on this Pi: '10-0008024b541d', '28-0000084e3138'. "
-            "Example: '28-0000084e3138'"
-        ),
-    )
+_SENSOR_ID_FIELD = Field(
+    ...,
+    min_length=1,
+    description=(
+        "1-Wire device ID as returned by temperature_list_sensors. "
+        "Known sensors on this Pi: '10-0008024b541d', '28-0000084e3138'. "
+        "Example: '28-0000084e3138'"
+    ),
+)
 
 
 # ---------------------------------------------------------------------------
@@ -123,35 +88,42 @@ def gpio_list_leds() -> dict[str, Any]:
 @mcp.tool(annotations=ToolAnnotations(
     readOnlyHint=False, destructiveHint=False, idempotentHint=True
 ))
-def gpio_led_on(input: LedPinInput) -> dict[str, Any]:
+def gpio_led_on(pin: int = _PIN_FIELD) -> dict[str, Any]:
     """Turn an LED on by BCM pin number.
 
     Use gpio_list_leds first to find the correct pin for a given colour.
     Returns the pin number and new state.
     Example: {"pin": 17, "state": "on"}
     """
-    led_on(input.pin)
-    return {"pin": input.pin, "state": "on"}
+    led_on(pin)
+    return {"pin": pin, "state": "on"}
 
 
 @mcp.tool(annotations=ToolAnnotations(
     readOnlyHint=False, destructiveHint=False, idempotentHint=True
 ))
-def gpio_led_off(input: LedPinInput) -> dict[str, Any]:
+def gpio_led_off(pin: int = _PIN_FIELD) -> dict[str, Any]:
     """Turn an LED off by BCM pin number.
 
     Use gpio_list_leds first to find the correct pin for a given colour.
     Returns the pin number and new state.
     Example: {"pin": 17, "state": "off"}
     """
-    led_off(input.pin)
-    return {"pin": input.pin, "state": "off"}
+    led_off(pin)
+    return {"pin": pin, "state": "off"}
 
 
 @mcp.tool(annotations=ToolAnnotations(
     readOnlyHint=False, destructiveHint=False, idempotentHint=False
 ))
-def gpio_led_blink(input: LedBlinkInput) -> dict[str, Any]:
+def gpio_led_blink(
+    pin: int = _PIN_FIELD,
+    on_time: float = Field(0.5, gt=0.0, le=10.0, description="Seconds ON per cycle. Default: 0.5"),
+    off_time: float = Field(  # noqa: E501
+        0.5, gt=0.0, le=10.0, description="Seconds OFF per cycle. Default: 0.5"
+    ),
+    n: int = Field(3, ge=1, le=20, description="Number of blink cycles (1–20). Default: 3"),
+) -> dict[str, Any]:
     """Blink an LED n times (blocking until finished).
 
     Use gpio_list_leds first to find the correct pin for a given colour.
@@ -159,19 +131,19 @@ def gpio_led_blink(input: LedBlinkInput) -> dict[str, Any]:
     Returns the pin, number of cycles executed, and final state (always 'off').
     Example: {"pin": 27, "cycles": 3, "state": "off"}
     """
-    led_blink(input.pin, on_time=input.on_time, off_time=input.off_time, n=input.n)
-    return {"pin": input.pin, "cycles": input.n, "state": "off"}
+    led_blink(pin, on_time=on_time, off_time=off_time, n=n)
+    return {"pin": pin, "cycles": n, "state": "off"}
 
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
-def gpio_led_status(input: LedPinInput) -> dict[str, Any]:
+def gpio_led_status(pin: int = _PIN_FIELD) -> dict[str, Any]:
     """Return the current state of an LED pin ('on' or 'off').
 
     Use gpio_list_leds first to find the correct pin for a given colour.
     Example response: {"pin": 22, "state": "on"}
     """
-    state = led_status(input.pin)
-    return {"pin": input.pin, "state": state}
+    state = led_status(pin)
+    return {"pin": pin, "state": state}
 
 
 # ---------------------------------------------------------------------------
@@ -192,7 +164,7 @@ def temperature_list_sensors() -> dict[str, Any]:
 
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
-def temperature_read(input: SensorIdInput) -> dict[str, Any]:
+def temperature_read(sensor_id: str = _SENSOR_ID_FIELD) -> dict[str, Any]:
     """Read the current temperature from a 1-Wire sensor in both Celsius and Fahrenheit.
 
     Use temperature_list_sensors first to get a valid sensor_id.
@@ -200,9 +172,9 @@ def temperature_read(input: SensorIdInput) -> dict[str, Any]:
     Returns sensor_id, temperature_c (float), and temperature_f (float).
     Example response: {"sensor_id": "28-0000084e3138", "temperature_c": 21.5, "temperature_f": 70.7}
     """
-    celsius = read_temperature(input.sensor_id)
+    celsius = read_temperature(sensor_id)
     return {
-        "sensor_id": input.sensor_id,
+        "sensor_id": sensor_id,
         "temperature_c": celsius,
         "temperature_f": round(celsius * 9 / 5 + 32, 2),
     }
