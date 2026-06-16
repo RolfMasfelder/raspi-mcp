@@ -17,9 +17,11 @@ pip install "mcp[fastmcp]>=1.0" pydantic>=2
 ```
 
 Enable 1-Wire in `/boot/firmware/config.txt` (Bookworm) or `/boot/config.txt` (older):
-```
+
+```txt
 dtoverlay=w1-gpio
 ```
+
 Then reboot.
 
 ## Run
@@ -34,6 +36,25 @@ python server.py --transport sse
 # stdio (subprocess / Claude Code)
 python server.py --transport stdio
 ```
+
+## Hardware wiring
+
+### LEDs
+
+| BCM pin | Colour |
+|---------|--------|
+| 17      | red    |
+| 27      | yellow |
+| 22      | green  |
+
+### DS18B20 temperature sensors
+
+| Sensor ID        | Interface |
+|------------------|-----------|
+| `10-0008024b541d` | 1-Wire    |
+| `28-0000084e3138` | 1-Wire    |
+
+1-Wire data line: GPIO 4 (requires `dtoverlay=w1-gpio` in `/boot/firmware/config.txt`).
 
 ## Tools
 
