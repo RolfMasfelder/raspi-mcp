@@ -1,0 +1,9 @@
+# Runtime dependencies for raspi-mcp
+# Install in a venv: pip install -r requirements.txt
+#
+# Note: gpiozero is intentionally NOT listed here — install it system-wide:
+#   sudo apt install -y python3-gpiozero
+# This avoids compilation issues and ensures the system GPIO bindings are used.
+
+mcp>=1.0
+pydantic>=2.0

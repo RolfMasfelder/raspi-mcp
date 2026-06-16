@@ -8,21 +8,62 @@ MCP server for Raspberry Pi GPIO/LED control and DS18B20 temperature sensors.
 - `gpiozero` (pre-installed on Raspi OS)
 - DS18B20 sensor connected via 1-Wire (GPIO 4 by default)
 
-## Setup
+## Setup on Raspberry Pi
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install "mcp[fastmcp]>=1.0" pydantic>=2
-```
+### 1 — Enable 1-Wire
 
-Enable 1-Wire in `/boot/firmware/config.txt` (Bookworm) or `/boot/config.txt` (older):
+Add to `/boot/firmware/config.txt` (Bookworm) or `/boot/config.txt` (older):
 
 ```txt
 dtoverlay=w1-gpio
 ```
 
 Then reboot.
+
+### 2 — Install system dependencies
+
+`gpiozero` is installed system-wide to keep GPIO bindings intact:
+
+```bash
+sudo apt install -y python3-gpiozero python3-venv
+```
+
+### 3 — Clone the repository
+
+The repository has a git remote `origin` configured on the Pi.
+On first setup, clone it:
+
+```bash
+cd ~
+git clone <origin-url> raspi-mcp
+cd raspi-mcp
+```
+
+On subsequent updates, pull the latest changes:
+
+```bash
+cd ~/raspi-mcp
+git pull
+```
+
+### 4 — Create venv and install Python dependencies
+
+```bash
+cd ~/raspi-mcp
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+> `requirements.txt` lists the direct runtime dependencies (`mcp`, `pydantic`).
+> `gpiozero` is intentionally excluded — it is managed by `apt` (see step 2).
+
+### 5 — Verify the installation
+
+```bash
+source venv/bin/activate
+python server.py --help
+```
 
 ## Run
 
