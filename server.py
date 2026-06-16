@@ -12,11 +12,16 @@ Usage:
 
 import argparse
 import logging
+import os
 from typing import Any
 
+import uvicorn
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from pydantic import Field
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from hardware.leds import led_blink, led_off, led_on, led_status
 from hardware.temperature import list_sensors, read_temperature
@@ -35,6 +40,24 @@ _parser.add_argument("--host", default="0.0.0.0")
 _args = _parser.parse_args()
 
 mcp = FastMCP("raspi-mcp", host=_args.host, port=_args.port)
+
+
+# ---------------------------------------------------------------------------
+# Authentication middleware
+# ---------------------------------------------------------------------------
+
+class _BearerTokenMiddleware(BaseHTTPMiddleware):
+    """Reject requests without a valid Authorization: Bearer <token> header."""
+
+    def __init__(self, app, api_key: str) -> None:
+        super().__init__(app)
+        self._api_key = api_key
+
+    async def dispatch(self, request: Request, call_next):
+        auth = request.headers.get("Authorization", "")
+        if not auth.startswith("Bearer ") or auth[7:] != self._api_key:
+            return JSONResponse({"error": "Unauthorized"}, status_code=401)
+        return await call_next(request)
 
 
 # ---------------------------------------------------------------------------
@@ -185,8 +208,23 @@ def temperature_read(sensor_id: str = _SENSOR_ID_FIELD) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    _api_key = os.environ.get("RASPI_MCP_API_KEY", "")
     logger.info(
-        "Starting raspi-mcp (transport=%s, host=%s, port=%d)",
+        "Starting raspi-mcp (transport=%s, host=%s, port=%d, auth=%s)",
         _args.transport, _args.host, _args.port,
+        "enabled" if _api_key else "DISABLED",
     )
-    mcp.run(transport=_args.transport)  # type: ignore[arg-type]
+    if not _api_key:
+        logger.warning("RASPI_MCP_API_KEY not set — server running without authentication")
+
+    if _args.transport == "stdio":
+        mcp.run(transport="stdio")
+    else:
+        app = (
+            mcp.streamable_http_app()
+            if _args.transport == "streamable-http"
+            else mcp.sse_app()
+        )
+        if _api_key:
+            app.add_middleware(_BearerTokenMiddleware, api_key=_api_key)
+        uvicorn.run(app, host=_args.host, port=_args.port)
