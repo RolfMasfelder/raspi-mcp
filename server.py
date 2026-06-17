@@ -219,14 +219,15 @@ def main() -> None:
 
     if args.transport == "stdio":
         mcp.run(transport="stdio")
+    elif not api_key:
+        mcp.run(transport=args.transport)  # type: ignore[arg-type]
     else:
         app = (
             mcp.streamable_http_app()
             if args.transport == "streamable-http"
             else mcp.sse_app()
         )
-        if api_key:
-            app.add_middleware(_BearerTokenMiddleware, api_key=api_key)
+        app.add_middleware(_BearerTokenMiddleware, api_key=api_key)
         uvicorn.run(app, host=args.host, port=args.port)
 
 
