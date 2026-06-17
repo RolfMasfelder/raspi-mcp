@@ -13,15 +13,15 @@ Usage:
 import argparse
 import logging
 import os
+import sys
 from typing import Any
 
 import uvicorn
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from pydantic import Field
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
 from starlette.responses import JSONResponse
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from hardware.leds import led_blink, led_off, led_on, led_status
 from hardware.temperature import list_sensors, read_temperature
@@ -36,18 +36,25 @@ mcp = FastMCP("raspi-mcp")
 # Authentication middleware
 # ---------------------------------------------------------------------------
 
-class _BearerTokenMiddleware(BaseHTTPMiddleware):
-    """Reject requests without a valid Authorization: Bearer <token> header."""
+class _BearerTokenMiddleware:
+    """Pure ASGI middleware: reject requests without a valid Bearer token.
 
-    def __init__(self, app, api_key: str) -> None:
-        super().__init__(app)
+    Uses raw ASGI (not BaseHTTPMiddleware) to avoid buffering streaming responses.
+    """
+
+    def __init__(self, app: ASGIApp, api_key: str) -> None:
+        self._app = app
         self._api_key = api_key
 
-    async def dispatch(self, request: Request, call_next):
-        auth = request.headers.get("Authorization", "")
-        if not auth.startswith("Bearer ") or auth[7:] != self._api_key:
-            return JSONResponse({"error": "Unauthorized"}, status_code=401)
-        return await call_next(request)
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] in ("http", "websocket"):
+            headers = dict(scope["headers"])
+            auth = headers.get(b"authorization", b"").decode()
+            if not auth.startswith("Bearer ") or auth[7:] != self._api_key:
+                response = JSONResponse({"error": "Unauthorized"}, status_code=401)
+                await response(scope, receive, send)
+                return
+        await self._app(scope, receive, send)
 
 
 # ---------------------------------------------------------------------------
@@ -208,27 +215,29 @@ def main() -> None:
     parser.add_argument("--host", default="0.0.0.0")
     args = parser.parse_args()
 
-    api_key = os.environ.get("RASPI_MCP_API_KEY", "")
-    logger.info(
-        "Starting raspi-mcp (transport=%s, host=%s, port=%d, auth=%s)",
-        args.transport, args.host, args.port,
-        "enabled" if api_key else "DISABLED",
-    )
-    if not api_key:
-        logger.warning("RASPI_MCP_API_KEY not set — server running without authentication")
-
     if args.transport == "stdio":
         mcp.run(transport="stdio")
-    elif not api_key:
-        mcp.run(transport=args.transport)  # type: ignore[arg-type]
-    else:
-        app = (
-            mcp.streamable_http_app()
-            if args.transport == "streamable-http"
-            else mcp.sse_app()
+        return
+
+    api_key = os.environ.get("RASPI_MCP_API_KEY", "")
+    if not api_key:
+        logger.error(
+            "RASPI_MCP_API_KEY is not set — refusing to start without authentication. "
+            "Set the environment variable and restart."
         )
-        app.add_middleware(_BearerTokenMiddleware, api_key=api_key)
-        uvicorn.run(app, host=args.host, port=args.port)
+        sys.exit(1)
+
+    logger.info(
+        "Starting raspi-mcp (transport=%s, host=%s, port=%d, auth=enabled)",
+        args.transport, args.host, args.port,
+    )
+    inner = (
+        mcp.streamable_http_app()
+        if args.transport == "streamable-http"
+        else mcp.sse_app()
+    )
+    app = _BearerTokenMiddleware(inner, api_key=api_key)
+    uvicorn.run(app, host=args.host, port=args.port, log_level="info")
 
 
 if __name__ == "__main__":

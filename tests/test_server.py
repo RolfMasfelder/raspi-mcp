@@ -41,9 +41,8 @@ def _make_middleware_app(api_key: str):
     from starlette.responses import PlainTextResponse
     from starlette.routing import Route
 
-    app = Starlette(routes=[Route("/", lambda r: PlainTextResponse("ok"))])
-    app.add_middleware(_BearerTokenMiddleware, api_key=api_key)
-    return app
+    inner = Starlette(routes=[Route("/", lambda r: PlainTextResponse("ok"))])
+    return _BearerTokenMiddleware(inner, api_key=api_key)
 
 
 async def _get(app, path: str = "/", headers: dict | None = None) -> httpx.Response:
