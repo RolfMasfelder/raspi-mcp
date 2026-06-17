@@ -18,6 +18,7 @@ from typing import Any
 
 import uvicorn
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from mcp.types import ToolAnnotations
 from pydantic import Field
 from starlette.responses import JSONResponse
@@ -29,7 +30,12 @@ from hardware.temperature import list_sensors, read_temperature
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("raspi-mcp")
+# DNS rebinding protection is disabled because requests arrive with the Pi's
+# hostname (e.g. pi1:8080) and we already enforce auth via Bearer token.
+mcp = FastMCP(
+    "raspi-mcp",
+    transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False),
+)
 
 
 # ---------------------------------------------------------------------------
