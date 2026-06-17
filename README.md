@@ -155,4 +155,17 @@ sudo systemctl enable --now raspi-mcp
 ## Note on Python version
 
 Raspberry Pi OS Buster ships Python 3.7 — too old for the MCP SDK (requires ≥3.11).
-Upgrade to Bookworm first (`sudo apt full-upgrade` or fresh image).
+Upgrade to trixie first (`sudo apt full-upgrade` or fresh image).
+
+## Logs on Raspberry Pi
+
+```bash
+# Alle Logs seit dem letzten Start
+journalctl -u raspi-mcp.service -b
+
+# Live mitlesen
+journalctl -u raspi-mcp.service -f
+
+# Mit Zeitstempel und Priorität
+journalctl -u raspi-mcp.service -b -o short-precise
+```
