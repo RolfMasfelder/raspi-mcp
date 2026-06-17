@@ -1,11 +1,11 @@
 """Tests for hardware.temperature using a tmp_path mock of /sys/bus/w1/devices/."""
 
-import pytest
 from pathlib import Path
 from unittest.mock import patch
 
-from hardware.temperature import list_sensors, read_temperature
+import pytest
 
+from hardware.temperature import list_sensors, read_temperature
 
 SENSOR_ID = "28-abcd12345678"
 SENSOR_ID_DS18S20 = "10-0008024b541d"

@@ -2,12 +2,9 @@
 
 ## Sicherheit
 
-- [ ] **Path-Traversal-Schutz für `sensor_id`**
-  `_SENSOR_ID_FIELD` um ein `pattern`-Constraint erweitern, damit nur gültige
-  1-Wire-IDs akzeptiert werden:
-  ```python
-  pattern=r"^(28|10|22)-[0-9a-f]{12}$"
-  ```
+- [x] **Path-Traversal-Schutz für `sensor_id`**
+  `pattern=r"^(28|10|22)-[0-9a-f]{12}$"` in `_SENSOR_ID_FIELD` ergänzt.
+  `min_length` wurde durch das Pattern ersetzt.
 
 - [x] **Authentication (API Key / Bearer Token)**
   `_BearerTokenMiddleware` in `server.py` implementiert. Systemd-Unit liest
@@ -16,31 +13,28 @@
 
 ## Code-Style / Best Practices
 
-- [ ] **`argparse` in `main()` verlagern**
-  `_parser.parse_args()` läuft derzeit auf Modulebene → `server.py` ist nicht
-  importierbar ohne CLI-Parsing. Alles ab `_parser = …` in eine `main()`-Funktion
-  einwickeln und mit `if __name__ == "__main__": main()` aufrufen.
+- [x] **`argparse` in `main()` verlagern**
+  Erledigt – `server.py` ist jetzt importierbar ohne CLI-Parsing.
 
-- [ ] **`ruff target-version` auf `"py313"` hochsetzen**
-  Der Pi läuft mit Python 3.13 – `pyproject.toml` sagt noch `"py311"`.
+- [x] **`ruff target-version` auf `"py313"` hochsetzen**
+  Erledigt. Auch `pi1_bak/` von ruff ausgeschlossen.
 
-- [ ] **`list_sensors()` sortiert zurückgeben**
-  `iterdir()` ist nicht deterministisch → `sorted(...)` ergänzen.
+- [x] **`list_sensors()` sortiert zurückgeben**
+  Erledigt – `sorted(...)` ergänzt.
 
-- [ ] **`_leds`-Dict eng typisieren**
-  `dict[int, object]` → `dict[int, "LED"]` via `TYPE_CHECKING`-Guard, ohne die
-  optionale `gpiozero`-Abhängigkeit zur Laufzeit zu erzwingen.
+- [x] **`_leds`-Dict eng typisieren**
+  Erledigt – `dict[int, "LED"]` via `TYPE_CHECKING`-Guard.
 
-- [ ] **`requirements.txt` entfernen oder generieren**
-  Doppelte Pflege mit `pyproject.toml`. Entweder komplett entfernen und Pi-Deploy
-  auf `pip install -e .` umstellen, oder per `pip-compile` aus `pyproject.toml`
-  ableiten.
+- [x] **`requirements.txt` und `requirements-dev.txt` via pip-compile generieren**
+  `pyproject.toml` ist Single Source of Truth. Beide Dateien werden per
+  `pip-compile` generiert und nicht mehr von Hand gepflegt. Workflow im README
+  dokumentiert.
 
 ## Tests
 
-- [ ] **Unit-Tests für `server.py`-Tool-Wrapper**
-  Die MCP-Tool-Funktionen (Fahrenheit-Umrechnung, Rückgabestruktur, `gpio_list_leds`
-  etc.) sind bisher ungetestet. Hardware-Module sind gut abgedeckt.
+- [x] **Unit-Tests für `server.py`-Tool-Wrapper**
+  `tests/test_server.py` erstellt: 6 Middleware-Tests + 12 Tool-Wrapper-Tests
+  (LEDs, Blink, Temperaturen, Fahrenheit-Umrechnung, `gpio_list_leds`).
 
 ---
 

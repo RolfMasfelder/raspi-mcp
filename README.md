@@ -55,7 +55,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-> `requirements.txt` lists the direct runtime dependencies (`mcp`, `pydantic`).
+> `requirements.txt` is generated from `pyproject.toml` (see [Dependency management](#dependency-management) below).
 > `gpiozero` is intentionally excluded — it is managed by `apt` (see step 2).
 
 ### 5 — Verify the installation
@@ -122,12 +122,28 @@ python server.py --transport stdio
 ## Tests (dev machine)
 
 ```bash
-pip install -e ".[dev]"
+pip install -r requirements-dev.txt
 pytest
 ```
 
 The temperature tests mock `/sys/bus/w1/devices/` via `tmp_path`.
 The LED tests use `gpiozero`'s built-in `MockFactory` — no hardware needed.
+
+## Dependency management
+
+`pyproject.toml` is the single source of truth for all dependencies.
+`requirements.txt` (runtime) and `requirements-dev.txt` (runtime + dev tools) are
+generated with [pip-compile](https://pip-tools.readthedocs.io/) and must **not** be
+edited by hand.
+
+After changing `pyproject.toml`, regenerate both files:
+
+```bash
+pip-compile pyproject.toml --output-file requirements.txt --no-emit-options
+pip-compile pyproject.toml --extra dev --output-file requirements-dev.txt --no-emit-options
+```
+
+Then commit all three files together.
 
 ## systemd autostart
 

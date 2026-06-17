@@ -35,11 +35,11 @@ def list_sensors() -> list[str]:
     if not W1_DEVICES_PATH.exists():
         logger.warning("1-Wire device path %s does not exist", W1_DEVICES_PATH)
         return []
-    return [
+    return sorted(
         d.name
         for d in W1_DEVICES_PATH.iterdir()
         if d.name.startswith(_TEMP_SENSOR_PREFIXES)
-    ]
+    )
 
 
 def read_temperature(sensor_id: str) -> float:

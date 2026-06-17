@@ -7,21 +7,24 @@ hardware (e.g. during tests). For explicit test overrides, set
 """
 
 import logging
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
+
+if TYPE_CHECKING:
+    from gpiozero import LED
 
 logger = logging.getLogger(__name__)
 
 # gpiozero is optional when running on non-Pi hardware (dev/test machines).
 # We import it lazily so the module can be loaded without it installed.
 try:
-    from gpiozero import LED, Device  # type: ignore[import]
+    from gpiozero import LED  # type: ignore[import]
 
     _GPIOZERO_AVAILABLE = True
 except ImportError:
     _GPIOZERO_AVAILABLE = False
     logger.warning("gpiozero not available — LED operations will be no-ops")
 
-_leds: dict[int, object] = {}  # pin -> LED instance
+_leds: dict[int, "LED"] = {}  # pin -> LED instance
 
 
 def _get_led(pin: int) -> object:

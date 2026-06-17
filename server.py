@@ -29,17 +29,7 @@ from hardware.temperature import list_sensors, read_temperature
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-_parser = argparse.ArgumentParser(description="Raspi MCP Server")
-_parser.add_argument(
-    "--transport",
-    choices=["streamable-http", "sse", "stdio"],
-    default="streamable-http",
-)
-_parser.add_argument("--port", type=int, default=8080)
-_parser.add_argument("--host", default="0.0.0.0")
-_args = _parser.parse_args()
-
-mcp = FastMCP("raspi-mcp", host=_args.host, port=_args.port)
+mcp = FastMCP("raspi-mcp")
 
 
 # ---------------------------------------------------------------------------
@@ -84,7 +74,7 @@ _PIN_FIELD = Field(
 
 _SENSOR_ID_FIELD = Field(
     ...,
-    min_length=1,
+    pattern=r"^(28|10|22)-[0-9a-f]{12}$",
     description=(
         "1-Wire device ID as returned by temperature_list_sensors. "
         "Known sensors on this Pi: '10-0008024b541d', '28-0000084e3138'. "
@@ -207,24 +197,38 @@ def temperature_read(sensor_id: str = _SENSOR_ID_FIELD) -> dict[str, Any]:
 # Entry point
 # ---------------------------------------------------------------------------
 
-if __name__ == "__main__":
-    _api_key = os.environ.get("RASPI_MCP_API_KEY", "")
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Raspi MCP Server")
+    parser.add_argument(
+        "--transport",
+        choices=["streamable-http", "sse", "stdio"],
+        default="streamable-http",
+    )
+    parser.add_argument("--port", type=int, default=8080)
+    parser.add_argument("--host", default="0.0.0.0")
+    args = parser.parse_args()
+
+    api_key = os.environ.get("RASPI_MCP_API_KEY", "")
     logger.info(
         "Starting raspi-mcp (transport=%s, host=%s, port=%d, auth=%s)",
-        _args.transport, _args.host, _args.port,
-        "enabled" if _api_key else "DISABLED",
+        args.transport, args.host, args.port,
+        "enabled" if api_key else "DISABLED",
     )
-    if not _api_key:
+    if not api_key:
         logger.warning("RASPI_MCP_API_KEY not set — server running without authentication")
 
-    if _args.transport == "stdio":
+    if args.transport == "stdio":
         mcp.run(transport="stdio")
     else:
         app = (
             mcp.streamable_http_app()
-            if _args.transport == "streamable-http"
+            if args.transport == "streamable-http"
             else mcp.sse_app()
         )
-        if _api_key:
-            app.add_middleware(_BearerTokenMiddleware, api_key=_api_key)
-        uvicorn.run(app, host=_args.host, port=_args.port)
+        if api_key:
+            app.add_middleware(_BearerTokenMiddleware, api_key=api_key)
+        uvicorn.run(app, host=args.host, port=args.port)
+
+
+if __name__ == "__main__":
+    main()
