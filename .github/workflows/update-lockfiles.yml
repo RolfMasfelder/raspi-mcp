@@ -38,3 +38,10 @@ jobs:
             git commit -m "chore: regenerate lockfiles after dependabot update" &&
             git push
           )
+
+      - name: Approve and enable auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.PR_CREATION_TOKEN }}
+        run: |
+          gh pr review "${{ github.event.pull_request.number }}" --approve
+          gh pr merge "${{ github.event.pull_request.number }}" --auto --merge
