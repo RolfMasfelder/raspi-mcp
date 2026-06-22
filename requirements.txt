@@ -55,7 +55,7 @@ pydantic==2.13.4
     #   raspi-mcp (pyproject.toml)
 pydantic-core==2.46.4
     # via pydantic
-pydantic-settings==2.14.1
+pydantic-settings==2.14.2
     # via mcp
 pyjwt[crypto]==2.13.0
     # via mcp
