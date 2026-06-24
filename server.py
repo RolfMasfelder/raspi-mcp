@@ -28,6 +28,7 @@ from hardware.leds import led_blink, led_off, led_on, led_status
 from hardware.temperature import list_sensors, read_temperature
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+# Level is overridden in main() based on RASPI_MCP_LOG_LEVEL / --log-level.
 logger = logging.getLogger(__name__)
 
 # DNS rebinding protection is disabled because requests arrive with the Pi's
@@ -211,15 +212,37 @@ def temperature_read(sensor_id: str = _SENSOR_ID_FIELD) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    # Read defaults from environment variables; CLI flags take precedence.
+    _valid_levels = {"debug", "info", "warning", "error", "critical"}
+
+    _env_log_level = os.environ.get("RASPI_MCP_LOG_LEVEL", "info").lower()
+    if _env_log_level not in _valid_levels:
+        _env_log_level = "info"
+
+    try:
+        _env_port = int(os.environ.get("RASPI_MCP_PORT", "8080"))
+    except ValueError:
+        _env_port = 8080
+
+    _env_host = os.environ.get("RASPI_MCP_HOST", "0.0.0.0")
+
     parser = argparse.ArgumentParser(description="Raspi MCP Server")
     parser.add_argument(
         "--transport",
         choices=["streamable-http", "sse", "stdio"],
         default="streamable-http",
     )
-    parser.add_argument("--port", type=int, default=8080)
-    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=_env_port)
+    parser.add_argument("--host", default=_env_host)
+    parser.add_argument(
+        "--log-level",
+        default=_env_log_level,
+        choices=sorted(_valid_levels),
+        dest="log_level",
+    )
     args = parser.parse_args()
+
+    logging.getLogger().setLevel(args.log_level.upper())
 
     if args.transport == "stdio":
         mcp.run(transport="stdio")
@@ -234,8 +257,8 @@ def main() -> None:
         sys.exit(1)
 
     logger.info(
-        "Starting raspi-mcp (transport=%s, host=%s, port=%d, auth=enabled)",
-        args.transport, args.host, args.port,
+        "Starting raspi-mcp (transport=%s, host=%s, port=%d, log_level=%s, auth=enabled)",
+        args.transport, args.host, args.port, args.log_level,
     )
     inner = (
         mcp.streamable_http_app()
@@ -243,7 +266,7 @@ def main() -> None:
         else mcp.sse_app()
     )
     app = _BearerTokenMiddleware(inner, api_key=api_key)
-    uvicorn.run(app, host=args.host, port=args.port, log_level="info")
+    uvicorn.run(app, host=args.host, port=args.port, log_level=args.log_level)
 
 
 if __name__ == "__main__":
