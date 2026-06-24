@@ -1,13 +1,36 @@
 # Copilot Instructions – raspi-mcp
 
+> **Language**: All responses and user-facing messages from Copilot must be in English. Commit messages must be in English as specified. German text in this document is for reference only and should not influence output language.
+
 ## Git Remotes
 
-| Remote   | Zweck                                      |
-|----------|--------------------------------------------|
-| `origin` | Bei jedem vom Nutzer ausgelösten Push-Befehl ohne explizite Remote-Angabe immer nach `origin` pushen. Niemals automatisch ohne expliziten Nutzerbefehl pushen. Bei Push-Fehler keinerlei Retry ausführen, keinen lokalen Commit zurücknehmen, und genau eine Fehlermeldung mit dem Git-Output an den Nutzer geben. |
-| `github` | Nur pushen, wenn der Nutzer das Wort "github" oder "GitHub" explizit im Push-Befehl nennt. Dann sowohl zu `origin` als auch zu `github` pushen (`origin` zuerst). |
+| Remote   | Zweck                 |
+|----------|-----------------------|
+| `origin` | Lokaler Mirror        |
+| `github` | GitHub (öffentlich)   |
 
-Commit-Format: `<prefix>: kurze Beschreibung auf Englisch` (eine Zeile, maximal 72 Zeichen). Erlaubte Prefixe: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`. Bei Unsicherheit `chore` verwenden.
+Push-Regeln:
+1. If the user does not explicitly trigger a push → do nothing.
+2. Never push to `main` under any circumstances (see Branch-Workflow). If the current branch is `main` and a push is triggered, refuse and instruct the user to switch to `dev` or a feature branch.
+3. Step 1 – Determine target remotes: If the user explicitly requests a push to `github` (e.g., says "push to github" or "push to both remotes"), target both `origin` and `github`. Otherwise, target `origin` only.
+4. Step 2 – Push to `origin`: Execute `git push origin`. On failure → stop, output the raw git error, do not retry, do not roll back the local commit.
+5. Step 3 – Push to `github` (only if targeted in step 1): Execute `git push github`. On failure → output the raw git error for `github` only, do not retry, do not attempt to undo the `origin` push.
+
+Commit-Format: `<prefix>: kurze Beschreibung auf Englisch` (eine Zeile, maximal 72 Zeichen). Erlaubte Prefixe: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`. If the change does not clearly match `feat`, `fix`, `refactor`, `docs`, or `test`, use `chore`.
+
+## Branch-Workflow
+
+| Branch | Zweck |
+|--------|-------|
+| `main` | Stabile Releases. Kein direkter Push erlaubt. Änderungen nur via PR von `dev`. Branch Protection auf GitHub erzwingt dies. |
+| `dev`  | **Standard-Arbeitsbranch.** Hier werden Features entwickelt, Commits gemacht und PRs erstellt. |
+
+- Neue Features und Fixes: von `dev` abzweigen, Änderungen auf Feature-Branch entwickeln, PR gegen `dev` erstellen, Merge via Squash.
+- Release: PR von `dev` → `main` erstellen; CI muss grün sein.
+- Niemals direkt auf `main` pushen — auch nicht per `git push --force`.
+- If the user requests a commit or push while on the `main` branch, refuse to execute it. Inform the user that direct commits to `main` are not allowed and instruct them to switch to `dev` or a feature branch first.
+- Dependabot-PRs landen ebenfalls auf `dev` (siehe `dependabot.yml`).
+- When creating a PR, use the GitHub CLI (`gh pr create`). Title must follow the commit-format convention. Body should summarize the changes. Before creating a PR from `dev` → `main`, confirm CI is green. Never create a PR targeting `main` from any branch other than `dev`.
 
 ## Projektüberblick
 
@@ -62,7 +85,7 @@ raspi-mcp/
 | `temperature_list_sensors()` | Alle DS18B20-Sensoren auflisten | `readOnlyHint=True` |
 | `temperature_read(sensor_id)` | Temperatur in °C lesen | `readOnlyHint=True` |
 
-Pin-Validierung: BCM-Nummern 1–40 (Pydantic `Field(ge=1, le=40)`).
+Pin-Validierung: BCM-Nummern 1–40 (Pydantic `Field(ge=1, le=40)`). Note: This range is a simplification; actual valid BCM GPIO numbers are a subset. The 1–40 range is intentionally used as a broad guard.
 
 ## Konventionen
 
@@ -71,39 +94,7 @@ Pin-Validierung: BCM-Nummern 1–40 (Pydantic `Field(ge=1, le=40)`).
 - **gpiozero MockFactory** für LED-Tests: `Device.pin_factory = MockFactory()` vor dem Import von `hardware.leds`
 - **1-Wire-Tests**: `W1_DEVICES_PATH` via `unittest.mock.patch` auf `tmp_path`-Verzeichnis umleiten
 - **Kein root-Zugriff nötig**: `gpiozero` und 1-Wire funktionieren als normaler `pi`-User, sofern der User in der Gruppe `gpio` ist
-- Linting: `ruff check .` vor jedem Commit; bei auto-fixbaren Issues niemals automatisch `--fix` ausführen, Nutzer informieren
-- Tests: `pytest` — bei Exit-Code != 0 nicht committen
+- Linting: `ruff check .` vor jedem Commit; bei auto-fixbaren Issues niemals automatisch `--fix` ausführen, Nutzer informieren. If `ruff check .` fails to execute (non-zero exit for reasons other than lint violations, e.g., tool not found), do not proceed with the commit and show the error output to the user. If `ruff check .` reports auto-fixable issues, show the ruff output to the user and stop before executing `git commit`. Do not stage or commit any files. Inform the user they must run `ruff check . --fix` themselves or explicitly say "commit anyway" before proceeding.
+- Tests: `pytest` — bei Exit-Code != 0 nicht committen. If pytest exits with a non-zero code, do not commit, and show the full pytest output to the user with a message that the commit was blocked due to failing tests.
 
-## Deployment auf dem Pi
 
-```bash
-# Einmalig auf dem Pi:
-sudo apt install -y python3-gpiozero python3-venv
-cd ~/raspi-mcp
-python3 -m venv .venv
-source .venv/bin/activate
-pip install "mcp[fastmcp]>=1.0" "pydantic>=2"
-
-# Server starten (Entwicklung):
-python server.py   # HTTP auf 0.0.0.0:8080
-
-# Autostart via systemd:
-sudo cp systemd/raspi-mcp.service /etc/systemd/system/
-sudo systemctl enable --now raspi-mcp
-```
-
-## Integration mit agentic_rag
-
-Der `agentic_rag`-Stack (Django/Celery) verbindet sich via:
-```
-http://pi1:8080/mcp
-```
-Konfiguriert über `.env`-Variable `RASPI_MCP_URL`. Die beiden Repos sind vollständig unabhängig — keine Submodules, keine gemeinsamen Python-Pakete.
-
-## Entwicklung ohne Hardware (Dev-Maschine)
-
-```bash
-pip install "mcp>=1.0" "pydantic>=2" gpiozero pytest pytest-asyncio ruff
-pytest   # LED-Tests via MockFactory, Temperaturtests via tmp_path
-python server.py   # Server läuft, GPIO-Calls gehen durch MockFactory
-```

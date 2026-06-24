@@ -5,4 +5,6 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    # PRs landen auf dev, nicht auf main.
+    # Releases gehen ausschließlich per PR dev → main (Branch Protection).
     target-branch: "dev"
