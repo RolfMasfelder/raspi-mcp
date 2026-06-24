@@ -70,17 +70,17 @@ Abarbeitung in der angegebenen Reihenfolge empfohlen (Sicherheit zuerst).
 
 ## 4 – Dokumentation
 
-- [ ] **README.md erweitern**:
-  - [ ] Badges: CI-Status, License, Python-Version
-  - [ ] Hardware-Voraussetzungen (Raspberry Pi Modell, OS-Version) klarer hervorheben
-  - [ ] Wiring-Diagramm oder Fritzing-Skizze (auch ASCII-Art reicht) für LED- und
+- [x] **README.md erweitern**:
+  - [x] Badges: CI-Status, License, Python-Version
+  - [x] Hardware-Voraussetzungen (Raspberry Pi Modell, OS-Version) klarer hervorheben
+  - [x] Wiring-Diagramm oder Fritzing-Skizze (auch ASCII-Art reicht) für LED- und
         DS18B20-Verkabelung
-  - [ ] Abschnitt „Quick Start" für neue Contributor ganz oben (3–5 Schritte)
-  - [ ] Link zu `CONTRIBUTING.md`
-  - [ ] Erwähnung, dass `venv/` lokal genutzt wird (nicht `.venv/` — `.gitignore`
+  - [x] Abschnitt „Quick Start" für neue Contributor ganz oben (3–5 Schritte)
+  - [x] Link zu `CONTRIBUTING.md`
+  - [x] Erwähnung, dass `venv/` lokal genutzt wird (nicht `.venv/` — `.gitignore`
         abgleichen: aktuell ist `.venv/` ignoriert, aber `venv/` nicht — **Bug beheben**)
 
-- [ ] **`CONTRIBUTING.md` anlegen**:
+- [x] **`CONTRIBUTING.md` anlegen**:
   - Entwicklungsumgebung auf Dev-Maschine ohne Hardware (MockFactory, tmp_path)
   - Commit-Format (`feat/fix/refactor/docs/test/chore: …`, max 72 Zeichen)
   - Branch-Workflow: Feature-Branch von `dev`, PR gegen `dev`, Merge via Squash
@@ -88,11 +88,11 @@ Abarbeitung in der angegebenen Reihenfolge empfohlen (Sicherheit zuerst).
   - Tests: `pytest` muss mit Exit-Code 0 durchlaufen
   - PR-Template verwenden (siehe §5)
 
-- [ ] **`CODE_OF_CONDUCT.md` anlegen**:
-  Standard Contributor Covenant (v2.1) — GitHub stellt eine Vorlage bereit.
+- [x] **`CODE_OF_CONDUCT.md` anlegen**:
+  Contributor Covenant v3.0 (aktuellste Version, Stand 2026-06-24).
   Bei Solo-Projekt optional, aber Best Practice für public repos.
 
-- [ ] **`CHANGELOG.md` anlegen** (Keep-a-Changelog-Format):
+- [x] **`CHANGELOG.md` anlegen** (Keep-a-Changelog-Format):
   Initiale Version 0.1.0 eintragen mit bisherigen Features.
 
 ---

@@ -1,10 +1,28 @@
 # raspi-mcp
 
+[![CI](https://github.com/RolfMasfelder/raspi-mcp/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/RolfMasfelder/raspi-mcp/actions/workflows/ci.yml)
+[![Python 3.13](https://img.shields.io/badge/python-3.13-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 MCP server for Raspberry Pi GPIO/LED control and DS18B20 temperature sensors.
 
 Exposes GPIO-connected LEDs and DS18B20 1-Wire temperature sensors as
 [MCP tools](https://modelcontextprotocol.io/) over HTTP (Streamable HTTP transport).
 Authentication is enforced via a Bearer token on all HTTP transports.
+
+## Quick Start (dev machine, no hardware)
+
+```bash
+git clone https://github.com/RolfMasfelder/raspi-mcp.git
+cd raspi-mcp
+pip install -r requirements-dev.txt
+pytest                               # 29 tests — no hardware needed
+python server.py --transport stdio   # stdio mode, no token required
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor workflow.
+
+---
 
 ## Hardware wiring
 
@@ -16,6 +34,15 @@ Authentication is enforced via a Bearer token on all HTTP transports.
 | 27      | yellow |
 | 22      | green  |
 
+```
+3.3V/5V  ──────────────────────────── (not used for LED)
+GND      ──┬──────────────────────────
+           │
+BCM 17  ───┤── 220 Ω ──[LED red]────┘
+BCM 27  ───┤── 220 Ω ──[LED yellow]─┘
+BCM 22  ───┘── 220 Ω ──[LED green]──┘  (cathodes → GND)
+```
+
 ### DS18B20 temperature sensors
 
 | Sensor ID         | Interface |
@@ -24,6 +51,14 @@ Authentication is enforced via a Bearer token on all HTTP transports.
 | `28-0000084e3138` | 1-Wire    |
 
 1-Wire data line: GPIO 4 (requires `dtoverlay=w1-gpio` in `/boot/firmware/config.txt`).
+
+```
+Pi 3.3V ──── 4.7 kΩ ──┬── DS18B20 VDD (pin 3)
+Pi BCM4 ───────────────┤── DS18B20 DATA (pin 2)
+Pi GND  ───────────────┘── DS18B20 GND (pin 1)
+```
+
+Both sensors share the same data line (1-Wire supports multiple devices in parallel).
 
 ---
 
@@ -347,3 +382,9 @@ journalctl -u raspi-mcp.service -b -o short-precise
 
 Raspberry Pi OS Buster ships Python 3.7 — too old for the MCP SDK (requires ≥3.11).
 Use Bookworm or newer (`sudo apt full-upgrade` or a fresh image).
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
