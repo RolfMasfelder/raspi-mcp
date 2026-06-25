@@ -163,12 +163,12 @@ GitHub prüft public repos automatisch auf folgende Dateien (Insights → Commun
 
 ## 9 – Repo-Einstellungen auf GitHub (nach Veröffentlichung)
 
-- [ ] **Topics setzen**: `raspberry-pi`, `mcp`, `gpio`, `ds18b20`, `iot`, `python`,
+- [x] **Topics setzen**: `raspberry-pi`, `mcp`, `gpio`, `ds18b20`, `iot`, `python`,
       `fastmcp`, `gpiozero` — manuell: GitHub → About → ⚙ Edit
-- [ ] **Description** im Repo-Header setzen — manuell: GitHub → About → ⚙ Edit
+- [x] **Description** im Repo-Header setzen — manuell: GitHub → About → ⚙ Edit
 - [ ] **Website** setzen (falls vorhanden)
-- [ ] **Issues und Discussions aktivieren** — manuell: Settings → Features
-- [ ] **Wikis deaktivieren** — manuell: Settings → Features → Wikis deaktivieren
+- [x] **Issues und Discussions aktivieren** — manuell: Settings → Features
+- [x] **Wikis deaktivieren** — manuell: Settings → Features → Wikis deaktivieren
 - [ ] **Sponsoring** konfigurieren (optional, `FUNDING.yml`)
 - [x] **GitHub Actions Permissions**: `permissions: contents: read` in `ci.yml` und
       `update-lockfiles.yml` explizit gesetzt
