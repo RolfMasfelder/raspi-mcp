@@ -16,7 +16,7 @@ Abarbeitung in der angegebenen Reihenfolge empfohlen (Sicherheit zuerst).
   Sicherstellen, dass `.env`, `*.env`, `raspi-mcp.env`, `*.pem`, `*.key` eingetragen sind —
   damit lokal erzeugte Secrets nie versehentlich committed werden.
 
-- [ ] **`SECURITY.md` anlegen**
+- [x] **`SECURITY.md` anlegen**
   Responsible-Disclosure-Prozess beschreiben (z. B. „Sicherheitslücken bitte per GitHub
   Private Vulnerability Reporting melden, kein öffentliches Issue"). GitHub zeigt diese
   Datei automatisch im Security-Tab an.
@@ -101,17 +101,17 @@ Abarbeitung in der angegebenen Reihenfolge empfohlen (Sicherheit zuerst).
 
 GitHub prüft public repos automatisch auf folgende Dateien (Insights → Community):
 
-- [ ] `LICENSE` — Lizenz wählen und Datei anlegen (Empfehlung: MIT oder Apache 2.0;
+- [x] `LICENSE` — Lizenz wählen und Datei anlegen (Empfehlung: MIT oder Apache 2.0;
       bei Hardware-Projekten manchmal CERN OHL für Hardware-Teile relevant)
-- [ ] `README.md` — vorhanden, aber noch erweitern (siehe §4)
-- [ ] `CONTRIBUTING.md` — anlegen (siehe §4)
-- [ ] `CODE_OF_CONDUCT.md` — anlegen (siehe §4)
-- [ ] `SECURITY.md` — anlegen (siehe §1)
-- [ ] `.github/PULL_REQUEST_TEMPLATE.md` — anlegen:
+- [x] `README.md` — vorhanden, aber noch erweitern (siehe §4)
+- [x] `CONTRIBUTING.md` — anlegen (siehe §4)
+- [x] `CODE_OF_CONDUCT.md` — anlegen (siehe §4)
+- [x] `SECURITY.md` — anlegen (siehe §1)
+- [x] `.github/PULL_REQUEST_TEMPLATE.md` — anlegen:
   - Checkliste: `ruff check .` ✓, `pytest` ✓, Beschreibung der Änderung
   - Typ der Änderung (feat / fix / refactor / docs)
   - Verweis auf ggf. zugehöriges Issue
-- [ ] `.github/ISSUE_TEMPLATE/` — anlegen:
+- [x] `.github/ISSUE_TEMPLATE/` — anlegen:
   - `bug_report.md` (Hardware-Modell, OS-Version, Fehlerbeschreibung, Logs)
   - `feature_request.md`
 
