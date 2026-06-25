@@ -6,6 +6,10 @@ on:
     paths:
       - "pyproject.toml"
 
+# GITHUB_TOKEN only needs read access; all write operations use PR_CREATION_TOKEN (PAT).
+permissions:
+  contents: read
+
 jobs:
   update-lockfiles:
     if: github.actor == 'dependabot[bot]'

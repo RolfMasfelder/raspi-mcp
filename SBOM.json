@@ -1,0 +1,305 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:1f740135-ed8e-405b-8610-9fb0538328ca",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-06-25T00:00:00Z",
+    "tools": [
+      {
+        "vendor": "GitHub Copilot",
+        "name": "Automated SBOM Update (scripts/generate_sbom.py)",
+        "version": "1.0.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "raspi-mcp-0.1.0",
+      "name": "raspi-mcp",
+      "version": "0.1.0",
+      "description": "MCP server for Raspberry Pi GPIO/LED control and DS18B20 temperature sensors",
+      "supplier": {
+        "name": "RolfMasfelder",
+        "url": ["https://github.com/RolfMasfelder/raspi-mcp"]
+      },
+      "licenses": [{"license": {"id": "MIT"}}],
+      "properties": [
+        {"name": "project:type", "value": "iot-server"},
+        {"name": "project:language", "value": "python"},
+        {"name": "project:protocol", "value": "mcp"},
+        {"name": "project:hardware", "value": "raspberry-pi"}
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "mcp-1.28.0",
+      "name": "mcp",
+      "version": "1.28.0",
+      "description": "Model Context Protocol SDK with FastMCP server framework",
+      "purl": "pkg:pypi/mcp@1.28.0",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "properties": [{"name": "project:dependency-type", "value": "direct"}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pydantic-2.13.4",
+      "name": "pydantic",
+      "version": "2.13.4",
+      "description": "Data validation using Python type annotations",
+      "purl": "pkg:pypi/pydantic@2.13.4",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "properties": [{"name": "project:dependency-type", "value": "direct"}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "starlette-1.3.1",
+      "name": "starlette",
+      "version": "1.3.1",
+      "description": "Lightweight ASGI framework for high-performance async services",
+      "purl": "pkg:pypi/starlette@1.3.1",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "uvicorn-0.49.0",
+      "name": "uvicorn",
+      "version": "0.49.0",
+      "description": "ASGI server implementation",
+      "purl": "pkg:pypi/uvicorn@0.49.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "anyio-4.14.0",
+      "name": "anyio",
+      "version": "4.14.0",
+      "description": "Asynchronous I/O abstraction layer",
+      "purl": "pkg:pypi/anyio@4.14.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "h11-0.16.0",
+      "name": "h11",
+      "version": "0.16.0",
+      "description": "Pure-Python HTTP/1.1 implementation",
+      "purl": "pkg:pypi/h11@0.16.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "sse-starlette-3.4.5",
+      "name": "sse-starlette",
+      "version": "3.4.5",
+      "description": "Server-Sent Events support for Starlette",
+      "purl": "pkg:pypi/sse-starlette@3.4.5",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "python-multipart-0.0.32",
+      "name": "python-multipart",
+      "version": "0.0.32",
+      "description": "Streaming multipart/form-data parser",
+      "purl": "pkg:pypi/python-multipart@0.0.32",
+      "licenses": [{"license": {"id": "Apache-2.0"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "httpx-0.28.1",
+      "name": "httpx",
+      "version": "0.28.1",
+      "description": "Async-capable HTTP client",
+      "purl": "pkg:pypi/httpx@0.28.1",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "httpx-sse-0.4.3",
+      "name": "httpx-sse",
+      "version": "0.4.3",
+      "description": "Server-Sent Events client for httpx",
+      "purl": "pkg:pypi/httpx-sse@0.4.3",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "httpcore-1.0.9",
+      "name": "httpcore",
+      "version": "1.0.9",
+      "description": "Minimal HTTP client implementation",
+      "purl": "pkg:pypi/httpcore@1.0.9",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "certifi-2026.6.17",
+      "name": "certifi",
+      "version": "2026.6.17",
+      "description": "Mozilla's CA certificate bundle",
+      "purl": "pkg:pypi/certifi@2026.6.17",
+      "licenses": [{"license": {"id": "MPL-2.0"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "idna-3.18",
+      "name": "idna",
+      "version": "3.18",
+      "description": "Internationalized domain name handling (RFC 5891)",
+      "purl": "pkg:pypi/idna@3.18",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pyjwt-2.13.0",
+      "name": "pyjwt",
+      "version": "2.13.0",
+      "description": "JSON Web Token implementation",
+      "purl": "pkg:pypi/pyjwt@2.13.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "cryptography-49.0.0",
+      "name": "cryptography",
+      "version": "49.0.0",
+      "description": "Cryptographic recipes and primitives",
+      "purl": "pkg:pypi/cryptography@49.0.0",
+      "licenses": [{"license": {"id": "Apache-2.0"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "cffi-2.0.0",
+      "name": "cffi",
+      "version": "2.0.0",
+      "description": "Foreign Function Interface for Python calling C code",
+      "purl": "pkg:pypi/cffi@2.0.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pycparser-3.0",
+      "name": "pycparser",
+      "version": "3.0",
+      "description": "Complete C99 parser in Python",
+      "purl": "pkg:pypi/pycparser@3.0",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pydantic-core-2.46.4",
+      "name": "pydantic-core",
+      "version": "2.46.4",
+      "description": "Core validation engine for Pydantic (Rust implementation)",
+      "purl": "pkg:pypi/pydantic-core@2.46.4",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pydantic-settings-2.14.2",
+      "name": "pydantic-settings",
+      "version": "2.14.2",
+      "description": "Settings management with Pydantic",
+      "purl": "pkg:pypi/pydantic-settings@2.14.2",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "annotated-types-0.7.0",
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "description": "Runtime type annotation metadata",
+      "purl": "pkg:pypi/annotated-types@0.7.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "typing-extensions-4.15.0",
+      "name": "typing-extensions",
+      "version": "4.15.0",
+      "description": "Backports of new typing module features",
+      "purl": "pkg:pypi/typing-extensions@4.15.0",
+      "licenses": [{"license": {"name": "PSF-2.0"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "typing-inspection-0.4.2",
+      "name": "typing-inspection",
+      "version": "0.4.2",
+      "description": "Runtime inspection of type hints",
+      "purl": "pkg:pypi/typing-inspection@0.4.2",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "python-dotenv-1.2.2",
+      "name": "python-dotenv",
+      "version": "1.2.2",
+      "description": "Load environment variables from .env files",
+      "purl": "pkg:pypi/python-dotenv@1.2.2",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "jsonschema-4.26.0",
+      "name": "jsonschema",
+      "version": "4.26.0",
+      "description": "JSON Schema validation library",
+      "purl": "pkg:pypi/jsonschema@4.26.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "jsonschema-specifications-2025.9.1",
+      "name": "jsonschema-specifications",
+      "version": "2025.9.1",
+      "description": "JSON Schema meta-schemas and vocabularies",
+      "purl": "pkg:pypi/jsonschema-specifications@2025.9.1",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "referencing-0.37.0",
+      "name": "referencing",
+      "version": "0.37.0",
+      "description": "JSON reference resolution library",
+      "purl": "pkg:pypi/referencing@0.37.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "rpds-py-2026.5.1",
+      "name": "rpds-py",
+      "version": "2026.5.1",
+      "description": "Persistent data structures (Rust implementation)",
+      "purl": "pkg:pypi/rpds-py@2026.5.1",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "attrs-26.1.0",
+      "name": "attrs",
+      "version": "26.1.0",
+      "description": "Class attribute definition helpers",
+      "purl": "pkg:pypi/attrs@26.1.0",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "click-8.4.1",
+      "name": "click",
+      "version": "8.4.1",
+      "description": "Command-line interface toolkit",
+      "purl": "pkg:pypi/click@8.4.1",
+      "licenses": [{"license": {"id": "BSD-3-Clause"}}]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "raspi-mcp-0.1.0",
+      "dependsOn": ["mcp-1.28.0", "pydantic-2.13.4"]
+    }
+  ]
+}

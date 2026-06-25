@@ -11,3 +11,5 @@ dist/
 raspi-mcp.env
 
 pi1_bak/
+
+sbom.*.json

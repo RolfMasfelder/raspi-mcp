@@ -16,7 +16,7 @@ Abarbeitung in der angegebenen Reihenfolge empfohlen (Sicherheit zuerst).
   Sicherstellen, dass `.env`, `*.env`, `raspi-mcp.env`, `*.pem`, `*.key` eingetragen sind —
   damit lokal erzeugte Secrets nie versehentlich committed werden.
 
-- [ ] **`SECURITY.md` anlegen**
+- [x] **`SECURITY.md` anlegen**
   Responsible-Disclosure-Prozess beschreiben (z. B. „Sicherheitslücken bitte per GitHub
   Private Vulnerability Reporting melden, kein öffentliches Issue"). GitHub zeigt diese
   Datei automatisch im Security-Tab an.
@@ -101,17 +101,17 @@ Abarbeitung in der angegebenen Reihenfolge empfohlen (Sicherheit zuerst).
 
 GitHub prüft public repos automatisch auf folgende Dateien (Insights → Community):
 
-- [ ] `LICENSE` — Lizenz wählen und Datei anlegen (Empfehlung: MIT oder Apache 2.0;
+- [x] `LICENSE` — Lizenz wählen und Datei anlegen (Empfehlung: MIT oder Apache 2.0;
       bei Hardware-Projekten manchmal CERN OHL für Hardware-Teile relevant)
-- [ ] `README.md` — vorhanden, aber noch erweitern (siehe §4)
-- [ ] `CONTRIBUTING.md` — anlegen (siehe §4)
-- [ ] `CODE_OF_CONDUCT.md` — anlegen (siehe §4)
-- [ ] `SECURITY.md` — anlegen (siehe §1)
-- [ ] `.github/PULL_REQUEST_TEMPLATE.md` — anlegen:
+- [x] `README.md` — vorhanden, aber noch erweitern (siehe §4)
+- [x] `CONTRIBUTING.md` — anlegen (siehe §4)
+- [x] `CODE_OF_CONDUCT.md` — anlegen (siehe §4)
+- [x] `SECURITY.md` — anlegen (siehe §1)
+- [x] `.github/PULL_REQUEST_TEMPLATE.md` — anlegen:
   - Checkliste: `ruff check .` ✓, `pytest` ✓, Beschreibung der Änderung
   - Typ der Änderung (feat / fix / refactor / docs)
   - Verweis auf ggf. zugehöriges Issue
-- [ ] `.github/ISSUE_TEMPLATE/` — anlegen:
+- [x] `.github/ISSUE_TEMPLATE/` — anlegen:
   - `bug_report.md` (Hardware-Modell, OS-Version, Fehlerbeschreibung, Logs)
   - `feature_request.md`
 
@@ -119,22 +119,24 @@ GitHub prüft public repos automatisch auf folgende Dateien (Insights → Commun
 
 ## 6 – SBOM (Software Bill of Materials)
 
-- [ ] **Einmalig manuell erzeugen** und als `sbom.spdx.json` ins Repo-Root committen
+- [x] **Einmalig manuell erzeugen** und als `sbom.spdx.json` ins Repo-Root committen
   (oder als Release-Asset — kein Commit ins Repo nötig):
   ```bash
   pip install cyclonedx-bom
   cyclonedx-py environment --output-format json > sbom.cyclonedx.json
   ```
   Oder via GitHub Actions `anchore/sbom-action` (empfohlen, läuft bei jedem Release).
+  **→ Erledigt: `SBOM.json` (CycloneDX 1.6) + `SBOM.md` (lesbare Version), aktualisierbar
+  via `python scripts/generate_sbom.py --apply`.**
 
-- [ ] **`sbom.spdx.json` / `sbom.cyclonedx.json` in `.gitignore`** eintragen, wenn
+- [x] **`sbom.spdx.json` / `sbom.cyclonedx.json` in `.gitignore`** eintragen, wenn
   lokal erzeugt und nicht committed werden soll.
 
 ---
 
 ## 7 – pyproject.toml / Metadaten
 
-- [ ] **Fehlende Metadaten ergänzen**:
+- [x] **Fehlende Metadaten ergänzen**:
   ```toml
   [project]
   license = { text = "MIT" }   # nach Lizenzwahl anpassen
@@ -153,23 +155,23 @@ GitHub prüft public repos automatisch auf folgende Dateien (Insights → Commun
 
 ## 8 – .gitignore bereinigen
 
-- [ ] `venv/` eintragen (aktuell fehlt es — nur `.venv/` ist eingetragen)
-- [ ] `.env` und `raspi-mcp.env` eintragen
-- [ ] `sbom.*.json` eintragen (falls lokal erzeugt)
+- [x] `venv/` eintragen (aktuell fehlt es — nur `.venv/` ist eingetragen)
+- [x] `.env` und `raspi-mcp.env` eintragen
+- [x] `sbom.*.json` eintragen (falls lokal erzeugt)
 
 ---
 
 ## 9 – Repo-Einstellungen auf GitHub (nach Veröffentlichung)
 
 - [ ] **Topics setzen**: `raspberry-pi`, `mcp`, `gpio`, `ds18b20`, `iot`, `python`,
-      `fastmcp`, `gpiozero`
-- [ ] **Description** im Repo-Header setzen (ein Satz)
+      `fastmcp`, `gpiozero` — manuell: GitHub → About → ⚙ Edit
+- [ ] **Description** im Repo-Header setzen — manuell: GitHub → About → ⚙ Edit
 - [ ] **Website** setzen (falls vorhanden)
-- [ ] **Issues und Discussions aktivieren** (falls externe Beiträge gewünscht)
-- [ ] **Wikis deaktivieren** (Doku liegt im README / docs/)
+- [ ] **Issues und Discussions aktivieren** — manuell: Settings → Features
+- [ ] **Wikis deaktivieren** — manuell: Settings → Features → Wikis deaktivieren
 - [ ] **Sponsoring** konfigurieren (optional, `FUNDING.yml`)
-- [ ] **GitHub Actions Permissions**: Sicherstellen, dass Workflows nur
-      `read`-Permission auf `contents` haben, außer wo explizit `write` benötigt wird
+- [x] **GitHub Actions Permissions**: `permissions: contents: read` in `ci.yml` und
+      `update-lockfiles.yml` explizit gesetzt
 
 ---
 
