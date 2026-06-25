@@ -136,7 +136,7 @@ GitHub prüft public repos automatisch auf folgende Dateien (Insights → Commun
 
 ## 7 – pyproject.toml / Metadaten
 
-- [ ] **Fehlende Metadaten ergänzen**:
+- [x] **Fehlende Metadaten ergänzen**:
   ```toml
   [project]
   license = { text = "MIT" }   # nach Lizenzwahl anpassen
@@ -155,23 +155,23 @@ GitHub prüft public repos automatisch auf folgende Dateien (Insights → Commun
 
 ## 8 – .gitignore bereinigen
 
-- [ ] `venv/` eintragen (aktuell fehlt es — nur `.venv/` ist eingetragen)
-- [ ] `.env` und `raspi-mcp.env` eintragen
-- [ ] `sbom.*.json` eintragen (falls lokal erzeugt)
+- [x] `venv/` eintragen (aktuell fehlt es — nur `.venv/` ist eingetragen)
+- [x] `.env` und `raspi-mcp.env` eintragen
+- [x] `sbom.*.json` eintragen (falls lokal erzeugt)
 
 ---
 
 ## 9 – Repo-Einstellungen auf GitHub (nach Veröffentlichung)
 
 - [ ] **Topics setzen**: `raspberry-pi`, `mcp`, `gpio`, `ds18b20`, `iot`, `python`,
-      `fastmcp`, `gpiozero`
-- [ ] **Description** im Repo-Header setzen (ein Satz)
+      `fastmcp`, `gpiozero` — manuell: GitHub → About → ⚙ Edit
+- [ ] **Description** im Repo-Header setzen — manuell: GitHub → About → ⚙ Edit
 - [ ] **Website** setzen (falls vorhanden)
-- [ ] **Issues und Discussions aktivieren** (falls externe Beiträge gewünscht)
-- [ ] **Wikis deaktivieren** (Doku liegt im README / docs/)
+- [ ] **Issues und Discussions aktivieren** — manuell: Settings → Features
+- [ ] **Wikis deaktivieren** — manuell: Settings → Features → Wikis deaktivieren
 - [ ] **Sponsoring** konfigurieren (optional, `FUNDING.yml`)
-- [ ] **GitHub Actions Permissions**: Sicherstellen, dass Workflows nur
-      `read`-Permission auf `contents` haben, außer wo explizit `write` benötigt wird
+- [x] **GitHub Actions Permissions**: `permissions: contents: read` in `ci.yml` und
+      `update-lockfiles.yml` explizit gesetzt
 
 ---
 

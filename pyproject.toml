@@ -3,6 +3,14 @@ name = "raspi-mcp"
 version = "0.1.0"
 description = "MCP server for Raspberry Pi GPIO/LED control and DS18B20 temperature sensors"
 requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Rolf Masfelder", email = "rolf.masfelder@nector-it-gmbh.de" }]
+keywords = ["raspberry-pi", "mcp", "gpio", "ds18b20", "iot"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+]
 dependencies = [
     "mcp>=1.0",
     "pydantic>=2.0",
@@ -16,6 +24,9 @@ dev = [
     "pip-tools>=7.0",
     "pre-commit>=4.6",
 ]
+
+[project.urls]
+Homepage = "https://github.com/RolfMasfelder/raspi-mcp"
 
 [tool.setuptools.packages.find]
 include = ["hardware*"]
