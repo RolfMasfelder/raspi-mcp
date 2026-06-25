@@ -30,7 +30,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SBOM_PATH = ROOT / "SBOM.json"
-SBOM_MD_PATH = ROOT / "SBOM.md"
+SBOM_MD_PATH = ROOT / "docs" / "SBOM.md"
 REQUIREMENTS_PATH = ROOT / "requirements.txt"
 PYPROJECT_PATH = ROOT / "pyproject.toml"
 LICENSE_PATH = ROOT / "LICENSE"
