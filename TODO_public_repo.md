@@ -119,15 +119,17 @@ GitHub prüft public repos automatisch auf folgende Dateien (Insights → Commun
 
 ## 6 – SBOM (Software Bill of Materials)
 
-- [ ] **Einmalig manuell erzeugen** und als `sbom.spdx.json` ins Repo-Root committen
+- [x] **Einmalig manuell erzeugen** und als `sbom.spdx.json` ins Repo-Root committen
   (oder als Release-Asset — kein Commit ins Repo nötig):
   ```bash
   pip install cyclonedx-bom
   cyclonedx-py environment --output-format json > sbom.cyclonedx.json
   ```
   Oder via GitHub Actions `anchore/sbom-action` (empfohlen, läuft bei jedem Release).
+  **→ Erledigt: `SBOM.json` (CycloneDX 1.6) + `SBOM.md` (lesbare Version), aktualisierbar
+  via `python scripts/generate_sbom.py --apply`.**
 
-- [ ] **`sbom.spdx.json` / `sbom.cyclonedx.json` in `.gitignore`** eintragen, wenn
+- [x] **`sbom.spdx.json` / `sbom.cyclonedx.json` in `.gitignore`** eintragen, wenn
   lokal erzeugt und nicht committed werden soll.
 
 ---
