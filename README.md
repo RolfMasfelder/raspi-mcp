@@ -36,11 +36,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor workflow.
 
 ```
 3.3V/5V  ──────────────────────────── (not used for LED)
-GND      ──┬──────────────────────────
-           │
-BCM 17  ───┤── 220 Ω ──[LED red]────┘
-BCM 27  ───┤── 220 Ω ──[LED yellow]─┘
-BCM 22  ───┘── 220 Ω ──[LED green]──┘  (cathodes → GND)
+GND      ───────────────────────────┬─
+                                    │
+BCM 17  ───── 220 Ω ──[LED red]─────┤
+BCM 27  ───── 220 Ω ──[LED yellow]──┤
+BCM 22  ───── 220 Ω ──[LED green]───┘  (cathodes → GND)
 ```
 
 ### DS18B20 temperature sensors
