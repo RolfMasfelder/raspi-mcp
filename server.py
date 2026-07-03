@@ -11,6 +11,7 @@ Usage:
 """
 
 import argparse
+import hmac
 import logging
 import os
 import sys
@@ -57,7 +58,8 @@ class _BearerTokenMiddleware:
         if scope["type"] in ("http", "websocket"):
             headers = dict(scope["headers"])
             auth = headers.get(b"authorization", b"").decode()
-            if not auth.startswith("Bearer ") or auth[7:] != self._api_key:
+            token = auth[7:] if auth.startswith("Bearer ") else ""
+            if not hmac.compare_digest(token, self._api_key):
                 response = JSONResponse({"error": "Unauthorized"}, status_code=401)
                 await response(scope, receive, send)
                 return

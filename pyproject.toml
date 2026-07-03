@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "MCP server for Raspberry Pi GPIO/LED control and DS18B20 temperature sensors"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "Rolf Masfelder", email = "rolf.masfelder@nector-it-gmbh.de" }]
+authors = [{ name = "Rolf Masfelder" }]
 keywords = ["raspberry-pi", "mcp", "gpio", "ds18b20", "iot"]
 classifiers = [
     "Programming Language :: Python :: 3",
