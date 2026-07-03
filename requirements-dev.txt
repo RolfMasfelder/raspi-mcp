@@ -34,7 +34,7 @@ cryptography==49.0.0
     # via pyjwt
 distlib==0.4.3
     # via virtualenv
-filelock==3.29.4
+filelock==3.29.5
     # via
     #   python-discovery
     #   virtualenv
