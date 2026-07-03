@@ -13,3 +13,6 @@ raspi-mcp.env
 pi1_bak/
 
 sbom.*.json
+
+TODO.md
+TODO_public_repo.md

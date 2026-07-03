@@ -101,7 +101,7 @@ sudo apt install -y python3-gpiozero python3-venv
 
 ```bash
 cd ~
-git clone https://github.com/<user>/raspi-mcp.git raspi-mcp
+git clone https://github.com/RolfMasfelder/raspi-mcp.git raspi-mcp
 cd raspi-mcp
 ```
 
