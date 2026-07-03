@@ -2,7 +2,7 @@ name: Regenerate lockfiles after Dependabot update
 
 on:
   pull_request:
-    branches: [dev, main]
+    branches: [main]
     paths:
       - "pyproject.toml"
 
@@ -19,6 +19,12 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.PR_CREATION_TOKEN }}
+
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
 
       - uses: actions/setup-python@v6
         with:
@@ -44,6 +50,8 @@ jobs:
           )
 
       - name: Approve and enable auto-merge
+        # Only auto-merge minor/patch bumps; major version bumps require manual review.
+        if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
         env:
           GH_TOKEN: ${{ secrets.PR_CREATION_TOKEN }}
         run: |

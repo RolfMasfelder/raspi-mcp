@@ -29,7 +29,7 @@ Commit-Format: `<prefix>: kurze Beschreibung auf Englisch` (eine Zeile, maximal 
 - Release: PR von `dev` → `main` erstellen; CI muss grün sein.
 - Niemals direkt auf `main` pushen — auch nicht per `git push --force`.
 - If the user requests a commit or push while on the `main` branch, refuse to execute it. Inform the user that direct commits to `main` are not allowed and instruct them to switch to `dev` or a feature branch first.
-- Dependabot-PRs landen ebenfalls auf `dev` (siehe `dependabot.yml`).
+- Dependabot-PRs zielen direkt auf `main` (siehe `dependabot.yml`), damit `dev` beim aktiven Entwickeln nicht laufend rebased/verändert wird. Dependency-Bumps auf `main` werden beim nächsten `dev` → `main`-Sync (in umgekehrter Richtung: `main` → `dev`) zurück nach `dev` gezogen.
 - When creating a PR, use the GitHub CLI (`gh pr create`). Title must follow the commit-format convention. Body should summarize the changes. Before creating a PR from `dev` → `main`, confirm CI is green. Never create a PR targeting `main` from any branch other than `dev`.
 
 ## Projektüberblick

@@ -356,8 +356,11 @@ After changing `pyproject.toml`, regenerate both files:
 
 ```bash
 pip-compile pyproject.toml --output-file requirements.txt --no-emit-options
-pip-compile pyproject.toml --extra dev --output-file requirements-dev.txt --no-emit-options
+pip-compile pyproject.toml --extra=dev --output-file requirements-dev.txt --no-emit-options
+
+ruff check . && pytest   # verify before committing, per your convention
 ```
+
 
 Then commit `pyproject.toml`, `requirements.txt`, and `requirements-dev.txt` together.
 
