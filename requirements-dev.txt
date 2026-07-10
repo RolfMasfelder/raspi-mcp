@@ -22,7 +22,7 @@ certifi==2026.6.17
     # via
     #   httpcore
     #   httpx
-cffi==2.0.0
+cffi==2.1.0
     # via cryptography
 cfgv==3.5.0
     # via pre-commit
@@ -120,7 +120,7 @@ rpds-py==2026.6.3
     # via
     #   jsonschema
     #   referencing
-ruff==0.15.20
+ruff==0.15.21
     # via raspi-mcp (pyproject.toml)
 sse-starlette==3.4.5
     # via mcp
