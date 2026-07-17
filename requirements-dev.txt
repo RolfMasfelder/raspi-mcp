@@ -141,7 +141,7 @@ typing-inspection==0.4.2
     #   pydantic-settings
 uvicorn==0.51.0
     # via mcp
-virtualenv==21.6.0
+virtualenv==21.6.1
     # via pre-commit
 wheel==0.47.0
     # via pip-tools
