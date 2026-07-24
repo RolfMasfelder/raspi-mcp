@@ -69,7 +69,7 @@ packaging==26.2
     #   build
     #   pytest
     #   wheel
-pip-tools==7.5.3
+pip-tools==7.6.0
     # via raspi-mcp (pyproject.toml)
 platformdirs==4.10.0
     # via
