@@ -139,7 +139,7 @@ typing-inspection==0.4.2
     #   mcp
     #   pydantic
     #   pydantic-settings
-uvicorn==0.51.0
+uvicorn==0.52.1
     # via mcp
 virtualenv==21.7.1
     # via pre-commit
