@@ -64,7 +64,7 @@ mcp==1.28.0
     # via raspi-mcp (pyproject.toml)
 nodeenv==1.10.0
     # via pre-commit
-packaging==26.2
+packaging==26.3
     # via
     #   build
     #   pytest
