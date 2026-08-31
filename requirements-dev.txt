@@ -106,7 +106,7 @@ pytest-asyncio==1.4.0
     # via raspi-mcp (pyproject.toml)
 python-discovery==1.5.1
     # via virtualenv
-python-dotenv==1.2.2
+python-dotenv==1.2.3
     # via pydantic-settings
 python-multipart==0.0.32
     # via mcp
