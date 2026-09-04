@@ -122,7 +122,7 @@ rpds-py==2026.6.3
     #   referencing
 ruff==0.16.5
     # via raspi-mcp (pyproject.toml)
-sse-starlette==3.4.6
+sse-starlette==3.4.8
     # via mcp
 starlette==1.6.0
     # via
