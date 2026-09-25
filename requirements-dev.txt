@@ -26,7 +26,7 @@ cffi==2.1.1
     # via cryptography
 cfgv==3.5.0
     # via pre-commit
-click==8.4.1
+click==8.5.0
     # via
     #   pip-tools
     #   uvicorn
