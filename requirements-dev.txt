@@ -92,7 +92,7 @@ pydantic-settings==2.15.0
     # via mcp
 pygments==2.21.0
     # via pytest
-pyjwt[crypto]==2.13.0
+pyjwt[crypto]==2.14.0
     # via mcp
 pyproject-hooks==1.2.0
     # via
