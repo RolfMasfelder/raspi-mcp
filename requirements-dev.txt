@@ -75,7 +75,7 @@ platformdirs==4.11.3
     # via
     #   python-discovery
     #   virtualenv
-pluggy==1.6.0
+pluggy==1.7.0
     # via pytest
 pre-commit==4.6.2
     # via raspi-mcp (pyproject.toml)
