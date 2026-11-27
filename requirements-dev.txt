@@ -79,7 +79,7 @@ pluggy==1.7.0
     # via pytest
 pre-commit==4.6.2
     # via raspi-mcp (pyproject.toml)
-pycparser==3.0
+pycparser==3.12
     # via cffi
 pydantic==2.13.5
     # via
